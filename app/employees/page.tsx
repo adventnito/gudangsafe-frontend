@@ -129,75 +129,78 @@ export default function EmployeesPage() {
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto">
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Manajemen Karyawan</h1>
             <p className="text-sm text-gray-500">Kelola akun karyawan</p>
           </div>
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
           >
             <Plus size={16} />
             Tambah Karyawan
           </button>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-sm border">
           {loading ? (
             <div className="p-8 text-center text-gray-400 text-sm">Memuat...</div>
           ) : (
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b">
-                <tr>
-                  <th className="text-left px-6 py-3 text-gray-500 font-medium">Nama</th>
-                  <th className="text-left px-6 py-3 text-gray-500 font-medium">Email</th>
-                  <th className="text-left px-6 py-3 text-gray-500 font-medium">Role</th>
-                  <th className="text-left px-6 py-3 text-gray-500 font-medium">Aksi</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-3 font-medium text-gray-800">{user.name}</td>
-                    <td className="px-6 py-3 text-gray-500">{user.email}</td>
-                    <td className="px-6 py-3">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                        user.role === 'admin'
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'bg-gray-100 text-gray-600'
-                      }`}>
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3">
-                      {/* Tombol EDIT - Tambahan baru */}
-                      <button
-                        onClick={() => handleEdit(user)}
-                        className="text-blue-400 hover:text-blue-600 p-1 mr-2"
-                      >
-                        <Pencil size={15} />
-                      </button>
-                      {/* Tombol DELETE yang sudah ada */}
-                      <button
-                        onClick={() => handleDelete(user.id)}
-                        className="text-red-400 hover:text-red-600 p-1"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </td>
+            /* ✅ PERBAIKAN: Bungkus tabel dengan overflow-x-auto untuk scroll horizontal di HP */
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm" style={{ minWidth: '600px' }}>
+                <thead className="bg-gray-50 border-b">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Nama</th>
+                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Email</th>
+                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Role</th>
+                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Aksi</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {users.map((user) => (
+                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">{user.name}</td>
+                      <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{user.email}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                          user.role === 'admin'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {user.role}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        {/* Tombol EDIT */}
+                        <button
+                          onClick={() => handleEdit(user)}
+                          className="text-blue-400 hover:text-blue-600 p-1 mr-2"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                        {/* Tombol DELETE */}
+                        <button
+                          onClick={() => handleDelete(user.id)}
+                          className="text-red-400 hover:text-red-600 p-1"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Modal Tambah User (SUDAH ADA) */}
+      {/* Modal Tambah User */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4 shadow-xl">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
             <div className="flex items-center justify-between mb-5">
               <h3 className="font-semibold text-gray-800">Tambah Karyawan Baru</h3>
               <button onClick={() => setShowModal(false)}>
@@ -253,10 +256,10 @@ export default function EmployeesPage() {
         </div>
       )}
 
-      {/* MODAL EDIT KARYAWAN - BARU */}
+      {/* MODAL EDIT KARYAWAN */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4 shadow-xl">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
             <div className="flex items-center justify-between mb-5">
               <h3 className="font-semibold text-gray-800">Edit Karyawan</h3>
               <button onClick={() => setShowEditModal(false)}>

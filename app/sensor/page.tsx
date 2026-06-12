@@ -78,14 +78,14 @@ export default function SensorHistoryPage() {
 
         {/* Filter */}
         <div className="bg-white rounded-2xl shadow-sm border p-4 mb-4">
-          <div className="flex flex-wrap items-end gap-3">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3">
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1">Dari Tanggal</label>
               <input
                 type="date"
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
               />
             </div>
             <div>
@@ -94,77 +94,83 @@ export default function SensorHistoryPage() {
                 type="date"
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
               />
             </div>
-            <button
-              onClick={handleFilter}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              <Search size={15} />
-              Filter
-            </button>
-            {(from || to) && (
+            <div className="flex gap-2">
               <button
-                onClick={handleReset}
-                className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                onClick={handleFilter}
+                className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
-                <X size={15} />
-                Reset
+                <Search size={15} />
+                Filter
               </button>
-            )}
-            <span className="text-xs text-gray-400 ml-auto">
-              {data.length} data ditemukan
-            </span>
+              {(from || to) && (
+                <button
+                  onClick={handleReset}
+                  className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                >
+                  <X size={15} />
+                  Reset
+                </button>
+              )}
+            </div>
+            <div className="sm:ml-auto">
+              <span className="text-xs text-gray-400">
+                {data.length} data ditemukan
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Tabel */}
-        <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-sm border">
           {loading ? (
             <div className="p-8 text-center text-gray-400 text-sm">Memuat data...</div>
           ) : data.length === 0 ? (
             <div className="p-8 text-center text-gray-400 text-sm">Tidak ada data pada rentang tanggal ini</div>
           ) : (
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b">
-                <tr>
-                  <th className="text-left px-6 py-3 text-gray-500 font-medium">Waktu</th>
-                  <th className="text-left px-6 py-3 text-gray-500 font-medium">Suhu</th>
-                  <th className="text-left px-6 py-3 text-gray-500 font-medium">Kelembaban</th>
-                  <th className="text-left px-6 py-3 text-gray-500 font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {data.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-3 text-gray-500">
-                      <div className="flex items-center gap-2">
-                        <Clock size={14} className="text-gray-400" />
-                        {new Date(row.created_at).toLocaleString('id-ID')}
-                      </div>
-                    </td>
-                    <td className="px-6 py-3">
-                      <div className="flex items-center gap-1.5 text-orange-500 font-medium">
-                        <Thermometer size={14} />
-                        {row.temperature}°C
-                      </div>
-                    </td>
-                    <td className="px-6 py-3">
-                      <div className="flex items-center gap-1.5 text-blue-500 font-medium">
-                        <Droplets size={14} />
-                        {row.humidity}%
-                      </div>
-                    </td>
-                    <td className="px-6 py-3">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getStatusStyle(row.status)}`}>
-                        {row.status?.toUpperCase() || '-'}
-                      </span>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm" style={{ minWidth: '650px' }}>
+                <thead className="bg-gray-50 border-b">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Waktu</th>
+                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Suhu</th>
+                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Kelembaban</th>
+                    <th className="text-left px-4 py-3 text-gray-500 font-medium">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {data.map((row) => (
+                    <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <Clock size={14} className="text-gray-400 shrink-0" />
+                          <span className="text-sm">{new Date(row.created_at).toLocaleString('id-ID')}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 text-orange-500 font-medium">
+                          <Thermometer size={14} className="shrink-0" />
+                          {row.temperature}°C
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 text-blue-500 font-medium">
+                          <Droplets size={14} className="shrink-0" />
+                          {row.humidity}%
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getStatusStyle(row.status)}`}>
+                          {row.status?.toUpperCase() || '-'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
